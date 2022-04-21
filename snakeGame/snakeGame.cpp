@@ -11,12 +11,12 @@ struct Pos {
 };
 
 std::vector<Pos> snake = {};
+Pos fruit;
 int8_t snakeLength = 0;
-
-Pos fruitPos;
 
 char lastKey = 0;
 
+bool fruitEaten = false;
 void update() {
 	system("cls");
 	if (_kbhit()) {
@@ -64,16 +64,18 @@ void update() {
 		snake[1] = head;
 	}
 
-	/*if (fruitEaten) {
+	if (snake[0].x == fruit.x && snake[0].y == fruit.y) {
+		fruitEaten = true;
+	}
+
+	if (fruitEaten) {
 		int fruitX = rand() % 49 + 0;
 		int fruitY = rand() % 49 + 0;
-		box[fruitX][fruitY] = Cell::FRUIT;
 
-		fruitPos = { fruitX, fruitY };
+		fruit = { fruitX, fruitY };
 		snakeLength++;
 		fruitEaten = false;
-	}*/
-
+	}
 }
 
 void draw() {
@@ -86,7 +88,11 @@ void draw() {
 		for (int j = 0; j < boxWidth; j++) {
 			if (snake[0].x == j && snake[0].y == i) {
 				std::cout << "HH";
-			} else std::cout<<"  ";
+			}
+			else if (fruit.x == j && fruit.y == i) {
+				std::cout << "FF";
+			}
+			else std::cout<<"  ";
 		}
 		std::cout << "||";
 	}
@@ -94,10 +100,8 @@ void draw() {
 	std::cout << "\n";
 	for (int j = 0; j < boxWidth; j++)
 		std::cout << "||";
-}//trial and error is good enough
-//sry i have to go now its getting late here
-/// i know . bye
-//k bye
+}
+
 int main() {
 	int startSnakeX = rand() % boxWidth;
 	int startSnakeY = rand() % boxHeight;
@@ -106,24 +110,6 @@ int main() {
 	while (1) {
 		draw();
 		update();
-		Sleep(100);
+		Sleep(300);
 	}
 }
-
-/*
-
-
-
-what do u mean they are lol
-this is not a matter or padding and marging like in css lol
-you just count the number of || here and you see there is a lack of them
-
-yeah but they are the length they should be tho
-
-lol you are right in some way
-so lets say there are two ways to fix it
-make them longer or add empty space in the front lol
-ok
-
-i would lenghten them lol
-*/
