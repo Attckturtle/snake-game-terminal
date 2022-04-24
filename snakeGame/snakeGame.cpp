@@ -22,7 +22,6 @@ void clearScreen()
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), cursorPosition);
 }
 
-
 void update() {
 	clearScreen();
 	if (_kbhit()) {
@@ -55,7 +54,9 @@ void update() {
 	}
 
 	Pos head = snake[0];
-
+	Pos lastCell = snake[snake.size()-1];
+	//lemme do some debugging im feeling dumb
+	//for some reason it works until the third fruit where it breaks the walls
 	switch (lastKey) {
 	case 'w':
 		snake[0].y -= 1;
@@ -70,7 +71,6 @@ void update() {
 		snake[0].x += 1;
 		break;
 	}
-	snake.push_back({ snake[0].x, snake[0].y});
 
 	if (snake.size() > 1) {
 		for (int i = 2; i < snake.size(); i++) {
@@ -80,41 +80,43 @@ void update() {
 	}
 
 	if (snake[0].x == fruit.x && snake[0].y == fruit.y) {
-		int fruitX = rand() % 49 + 0;
-		int fruitY = rand() % 49 + 0;
+		int fruitX = rand() % boxWidth;
+		int fruitY = rand() % boxHeight;
 
 		fruit = { fruitX, fruitY };
-		snakeLength++;
+
+		snake.push_back(lastCell);
+
 	}
 }
 
 void draw() {
+	
 	clearScreen();
-	for (int j = 0; j < boxWidth; j++)
-		std::cout << "||";
+	for (int j = 0; j < boxWidth + 2; j++) std::cout << "||";
 
-	for (int k = 0; k < snakeLength; k++) {
-		for (int i = 0; i < boxHeight; i++) {
-			std::cout << "\n||";
-			for (int j = 0; j < boxWidth; j++) {
-				if (snake[0].x == j && snake[0].y == i) {
-					std::cout << "HH";
-				}
-				else if (fruit.x == j && fruit.y == i) {
-					std::cout << "FF";
-				}
-				else if (snake[k].x == j && snake[k].y == i) {
+	for (int i = 0; i < boxHeight; i++) {
+		std::cout << "\n||";
+		for (int j = 0; j < boxWidth; j++) {
+			bool isSnake = false;
+
+			for (int k = 1; k < snake.size(); k++)
+				if (snake[k].x == j && snake[k].y == i) {
 					std::cout << "BB";
+					isSnake = true;
 				}
+
+			if (!isSnake) {
+				if (snake[0].x == j && snake[0].y == i) std::cout << "HH";
+				else if (fruit.x == j && fruit.y == i) std::cout << "FF";
 				else std::cout << "  ";
 			}
-			std::cout << "||";
 		}
+		std::cout << "||";
 	}
 
 	std::cout << "\n";
-	for (int j = 0; j < boxWidth; j++)
-		std::cout << "||";
+	for (int j = 0; j < boxWidth + 2; j++) std::cout << "||";
 }
 
 int main() {
