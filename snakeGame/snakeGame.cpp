@@ -2,6 +2,7 @@
 #include<vector>
 #include<conio.h>
 #include<Windows.h>
+#include<ctime>
 #include<cstdlib>
 
 constexpr int boxHeight = 20, boxWidth = 20;
@@ -12,7 +13,6 @@ struct Pos {
 
 std::vector<Pos> snake = {};
 Pos fruit;
-int8_t snakeLength = 1;
 
 char lastKey = 0;
 
@@ -23,40 +23,33 @@ void clearScreen()
 }
 
 void update() {
-	clearScreen();
 	if (_kbhit()) {
 		switch (_getch()) {
-			if (lastKey != 's') {
 		case 'w':
 		case 'W':
-			lastKey = 'w';
+			if (lastKey != 's') lastKey = 'w';
 			break;
-			}
-			if (lastKey != 'w') {
+
 		case 's':
 		case 'S':
-			lastKey = 's';
+			if (lastKey != 'w') lastKey = 's';
 			break;
-			}
-			if (lastKey != 'd') {
+
 		case 'a':
 		case 'A':
-			lastKey = 'a';
+			if (lastKey != 'd') lastKey = 'a';
 			break;
-			}
-			if (lastKey != 'a') {
+
 		case 'd':
 		case 'D':
-			lastKey = 'd';
+			if (lastKey != 'a') lastKey = 'd';
 			break;
-			}
 		}
 	}
 
 	Pos head = snake[0];
-	Pos lastCell = snake[snake.size()-1];
-	//lemme do some debugging im feeling dumb
-	//for some reason it works until the third fruit where it breaks the walls
+	Pos lastCell = snake.back();
+
 	switch (lastKey) {
 	case 'w':
 		snake[0].y -= 1;
@@ -86,7 +79,6 @@ void update() {
 		fruit = { fruitX, fruitY };
 
 		snake.push_back(lastCell);
-
 	}
 }
 
@@ -120,6 +112,7 @@ void draw() {
 }
 
 int main() {
+	srand(time(0));
 	int startSnakeX = rand() % boxWidth;
 	int startSnakeY = rand() % boxHeight;
 	snake.push_back({ startSnakeY, startSnakeX });
@@ -131,7 +124,7 @@ int main() {
 		if (snake[0].x == boxWidth + 1 || snake[0].x == -1 || snake[0].y == boxHeight + 1 || snake[0].y == -1) {
 			clearScreen();
 			std::cout << "You lose\n";
-			std::cout << "Your score was: " << snakeLength;
+			std::cout << "Your score was: " << snake.size() - 1;
 			break;
 		}
 
