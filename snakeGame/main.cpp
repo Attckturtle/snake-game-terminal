@@ -18,7 +18,7 @@ char lastKey = 0;
 
 void clearScreen()
 {
-	COORD cursorPosition;	cursorPosition.X = 0;	cursorPosition.Y = 0;	
+	COORD cursorPosition;	cursorPosition.X = 0;	cursorPosition.Y = 0;
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), cursorPosition);
 }
 
@@ -66,7 +66,7 @@ void update() {
 	}
 
 	if (snake.size() > 1) {
-		for (int i = 2; i < snake.size(); i++) {
+		for (int i = snake.size() - 1; i >= 2; i--) {
 			snake[i] = snake[i - 1];
 		}
 		snake[1] = head;
@@ -83,7 +83,7 @@ void update() {
 }
 
 void draw() {
-	
+
 	clearScreen();
 	for (int j = 0; j < boxWidth + 2; j++) std::cout << "||";
 
@@ -112,25 +112,35 @@ void draw() {
 }
 
 int main() {
+	bool gameend = false;
 	srand(time(0));
 	int startSnakeX = rand() % boxWidth;
 	int startSnakeY = rand() % boxHeight;
 	snake.push_back({ startSnakeY, startSnakeX });
-
 	while (true) {
 		draw();
 		update();
 
-		for (int i = 1; i < snake.size() - 1; i++) {
-			if ((snake[0].x == boxWidth + 1 || snake[0].x == -1 || snake[0].y == boxHeight + 1 || snake[0].y == -1) ||
-				(snake[0].x == snake[i].x && snake[0].y == snake[i].y)) {
-				break;
-				clearScreen();
-				std::cout << "You lose\n";
-				std::cout << "Your score was: " << snake.size() - 1;
+		if (snake[0].x == boxWidth + 1 || snake[0].x == -1 || snake[0].y == boxHeight + 1 || snake[0].y == -1) {
+			for (int i = 1; i < snake.size() - 1; i++) {
+				if (snake[0].x == snake[i].x && snake[0].y == snake[i].y) {
+					clearScreen();
+					std::cout << "You lose\n";
+					std::cout << "Your score was: " << snake.size() - 1;
+					gameend = true;
+					break;
+				}
 			}
-		}
 
+			clearScreen();
+			std::cout << "You lose\n";
+			std::cout << "Your score was: " << snake.size() - 1;
+			gameend = true;
+		}
+		if (gameend) {
+			break;
+		}
 		Sleep(100);
 	}
+	return 0;
 }
