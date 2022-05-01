@@ -117,26 +117,20 @@ int main() {
 	int startSnakeX = rand() % boxWidth;
 	int startSnakeY = rand() % boxHeight;
 	snake.push_back({ startSnakeY, startSnakeX });
-	while (true) {
+	while (1) {
 		draw();
 		update();
 
-		if (snake[0].x == boxWidth + 1 || snake[0].x == -1 || snake[0].y == boxHeight + 1 || snake[0].y == -1) {
-			for (int i = 1; i < snake.size() - 1; i++) {
-				if (snake[0].x == snake[i].x && snake[0].y == snake[i].y) {
-					clearScreen();
-					std::cout << "You lose\n";
-					std::cout << "Your score was: " << snake.size() - 1;
-					gameend = true;
-					break;
-				}
-			}
-
+		for (int i = 1; i < snake.size(); i++) {
+			if ((snake[0].x > boxWidth || snake[0].x < 0 || snake[0].y > boxHeight || snake[0].y < 0) ||
+				(snake[0].x == snake[i].x && snake[0].y == snake[i].y)) {
 			clearScreen();
 			std::cout << "You lose\n";
 			std::cout << "Your score was: " << snake.size() - 1;
 			gameend = true;
+			break;
 		}
+	}
 		if (gameend) {
 			break;
 		}
